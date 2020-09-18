@@ -10,6 +10,10 @@ import (
 	"sigs.k8s.io/kustomize/kyaml/yaml"
 )
 
+const (
+	KptFileName = kptfile.KptFileName
+)
+
 func KptFileToProduct(dir string) (catalog.Product, error) {
 	k, err := kptfileutil.ReadFileStrict(dir)
 	if err != nil {

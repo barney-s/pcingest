@@ -8,6 +8,7 @@ ARCH ?= amd64
 ALL_ARCH = amd64 arm arm64 ppc64le s390x
 IMAGE_NAME = pcingest
 
+VER ?= v0.0.1
 ifeq ($(ARCH), amd64)
 IMAGE_TAG ?= $(VER)
 else

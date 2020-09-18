@@ -31,6 +31,14 @@ var ProductTypeMeta = yaml.ResourceMeta{
 	},
 }
 
+func (p Product) String() string {
+	d, err := yaml.Marshal(&p)
+	if err != nil {
+		return "error converting to string"
+	}
+	return string(d)
+}
+
 // Product
 type Product struct {
 	yaml.ResourceMeta `yaml:",inline"`
