@@ -9,12 +9,17 @@ import (
 	"path/filepath"
 
 	"github.com/pcingest/api/catalog"
+	catalogapi "github.com/pcingest/internal/gcp/catalog"
 	"github.com/pcingest/internal/gcp/product"
 	"github.com/pcingest/internal/kpt"
 )
 
 func main() {
 	scanPaths := []string{"."}
+	c, err := scanCatalog(".")
+	if err != nil {
+		panic(fmt.Sprintf("Error scanning for catalog: %v", err))
+	}
 	products, err := scanProducts(scanPaths)
 	if err != nil {
 		panic(fmt.Sprintf("Error scanning for products: %v", err))
@@ -24,8 +29,12 @@ func main() {
 		fmt.Println("No products found")
 		os.Exit(0)
 	}
+
+	if err = catalogapi.Reconcile(c.catalog); err != nil {
+		panic(fmt.Sprintf("Error reconciling catalog %s %s: %v", c.directory, c.from, err))
+	}
 	for _, p := range products {
-		if err = product.Reconcile(p.product); err != nil {
+		if err = product.Reconcile(p.product, c.catalog); err != nil {
 			fmt.Printf("Error reconciling product %s %s: %v", p.directory, p.from, err)
 			continue
 		}
@@ -75,9 +84,28 @@ func scanProducts(scanPaths []string) ([]productInfo, error) {
 	return products, nil
 }
 
+func scanCatalog(dir string) (catalogInfo, error) {
+	c, err := catalog.ReadCatalogFile(dir)
+	if err != nil {
+		return catalogInfo{}, err
+	}
+	return catalogInfo{
+		directory: dir,
+		from:      catalog.ProductFileName,
+		catalog:   c,
+	}, nil
+}
+
 // productInfo wraps metadata
 type productInfo struct {
 	directory string
 	product   catalog.Product
+	from      string
+}
+
+// catalogInfo wraps metadata
+type catalogInfo struct {
+	directory string
+	catalog   catalog.Catalog
 	from      string
 }
