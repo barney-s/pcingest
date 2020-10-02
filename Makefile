@@ -28,7 +28,8 @@ test:
 	go test -v ./... -coverprofile $(COVER_FILE)
 
 # Build ingest binary
-bin/pcingest: main.go
+.PHONY: bin/pcingest
+bin/pcingest: 
 	go build -o bin/pcingest main.go
 
 ## --------------------------------------

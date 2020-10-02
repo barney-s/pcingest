@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"github.com/pcingest/api/catalog"
+	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	cpcp "google.golang.org/api/cloudprivatecatalogproducer/v1beta1"
 )
@@ -16,16 +17,24 @@ func Reconcile(p catalog.Catalog) error {
 	// Use oauth2.NoContext if there isn't a good context to pass in.
 	ctx := context.Background()
 
-	client, err := google.DefaultClient(ctx, cpcp.CloudPlatformScope)
+	ts, err := google.DefaultTokenSource(ctx, cpcp.CloudPlatformScope)
 	if err != nil {
+		fmt.Printf("ERR TockenSvc")
 		return err
 	}
-	svc, err := cpcp.New(client)
+	client := oauth2.NewClient(ctx, ts)
+
+	_, err = google.DefaultClient(oauth2.NoContext, cpcp.CloudPlatformScope)
+	if err != nil {
+		fmt.Printf("ERR NewClient")
+		return err
+	}
+	_, err = cpcp.New(client)
 	if err != nil {
 		return err
 	}
 
-	cobj := cpcp.GoogleCloudPrivatecatalogproducerV1beta1Catalog{
+	_ = cpcp.GoogleCloudPrivatecatalogproducerV1beta1Catalog{
 		Description: "",
 		Name:        "",
 		Parent:      "",
@@ -35,6 +44,6 @@ func Reconcile(p catalog.Catalog) error {
 	// Reference:
 	// https://github.com/googleapis/google-api-go-client/blob/master/cloudprivatecatalogproducer/v1beta1/cloudprivatecatalogproducer-gen.go
 	fmt.Printf("Reconciling Catalog: \n%s\n", p)
-	_, err = svc.Catalogs.Create(&cobj).Do()
+	//_, err = svc.Catalogs.Create(&cobj).Do()
 	return err
 }
