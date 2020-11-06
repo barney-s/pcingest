@@ -1,0 +1,11 @@
+apiVersion: catalog.cnrm.cloud.google.com/v1beta1
+kind: Product
+metadata:
+  name: anthos-base
+display:
+  title: Anthos Base
+  description: "Package to setup anthos base on GKE"
+  support: support@anthos.com
+  icon_uri: http://cloud.google.com/icons/anthos.svg
+assests:
+  - name: base module

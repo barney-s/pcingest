@@ -14,15 +14,15 @@ const (
 	KptFileName = kptfile.KptFileName
 )
 
-func KptFileToProduct(dir string) (catalog.Product, error) {
+func KptFileToProduct(dir string, commit string, repo string) (catalog.Product, error) {
 	k, err := kptfileutil.ReadFileStrict(dir)
 	if err != nil {
 		return catalog.Product{}, err
 	}
-	return buildProduct(k), nil
+	return buildProduct(k, commit, repo, dir), nil
 }
 
-func buildProduct(k kptfile.KptFile) catalog.Product {
+func buildProduct(k kptfile.KptFile, commit string, repo string, directory string) catalog.Product {
 	p := catalog.Product{
 		ResourceMeta: yaml.ResourceMeta{
 			ObjectMeta: yaml.ObjectMeta{
@@ -47,10 +47,9 @@ func buildProduct(k kptfile.KptFile) catalog.Product {
 		Assests: []catalog.AssetReference{{
 			Name: k.ObjectMeta.Name,
 			Git: catalog.GitSource{
-				Commit:    k.Upstream.Git.Commit,
-				Repo:      k.Upstream.Git.Repo,
-				Directory: k.Upstream.Git.Directory,
-				Ref:       k.Upstream.Git.Ref,
+				Commit:    commit,
+				Repo:      repo,
+				Directory: directory,
 			}},
 		},
 	}

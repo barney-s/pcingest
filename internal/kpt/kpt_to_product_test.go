@@ -5,10 +5,8 @@ package kpt_test
 
 import (
 	"io/ioutil"
-	"path/filepath"
 	"testing"
 
-	"github.com/GoogleContainerTools/kpt/pkg/kptfile"
 	"github.com/pcingest/api/catalog"
 	. "github.com/pcingest/internal/kpt"
 
@@ -22,27 +20,7 @@ const (
 
 // TestKptFileToProduct tests the conversion function.
 func TestKptFileToProduct(t *testing.T) {
-	dir, err := ioutil.TempDir("", TmpDirPrefix)
-	assert.NoError(t, err)
-	err = ioutil.WriteFile(filepath.Join(dir, kptfile.KptFileName), []byte(`apiVersion: kpt.dev/v1alpha1
-kind: Kptfile
-metadata:
-  name: anthos-base
-upstream:
-  type: git
-  git:
-    commit: dd8adeb5483fc1s455fssfrh5211kjkjgvck9377
-    directory: package
-    ref: refs/heads/owners-update
-    repo: https://github.com/anthos/catalog/base
-packageMetadata:
-  shortDescription: "Package to setup anthos base on GKE"
-  email: support@anthos.com
-  version: v0.1.0
-`), 0600)
-	assert.NoError(t, err)
-
-	f, err := KptFileToProduct(dir)
+	f, err := KptFileToProduct("test/product", "dd8adeb5483fc1s455fssfrh5211kjkjgvck9377", "https://github.com/anthos/catalog/base")
 	assert.NoError(t, err)
 	assert.Equal(t, catalog.Product{
 		ResourceMeta: yaml.ResourceMeta{
@@ -66,8 +44,7 @@ packageMetadata:
 			Name: "anthos-base",
 			Git: catalog.GitSource{
 				Commit:    "dd8adeb5483fc1s455fssfrh5211kjkjgvck9377",
-				Directory: "package",
-				Ref:       "refs/heads/owners-update",
+				Directory: "test/product",
 				Repo:      "https://github.com/anthos/catalog/base",
 			}},
 		},
@@ -78,7 +55,7 @@ packageMetadata:
 func TestReadFile_failRead(t *testing.T) {
 	dir, err := ioutil.TempDir("", TmpDirPrefix)
 	assert.NoError(t, err)
-	p, err := KptFileToProduct(dir)
+	p, err := KptFileToProduct(dir, "", "")
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), "no such file or directory")
 	assert.Equal(t, catalog.Product{}, p)

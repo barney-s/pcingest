@@ -1,0 +1,15 @@
+apiVersion: kpt.dev/v1alpha1
+kind: Kptfile
+metadata:
+  name: anthos-base
+upstream:
+  type: git
+  git:
+    commit: TODO
+    directory: TODO
+    ref: TODO
+    repo: TODO
+packageMetadata:
+  shortDescription: "Package to setup anthos base on GKE"
+  email: support@anthos.com
+  version: v0.1.0

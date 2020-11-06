@@ -45,6 +45,8 @@ func scanProducts(scanPaths []string) ([]productInfo, error) {
 	var products []productInfo
 	var product productInfo
 
+	commit := os.Getenv("COMMIT_SHA")
+	repo := os.Getenv("REPO_NAME")
 	for _, path := range scanPaths {
 		err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -52,7 +54,7 @@ func scanProducts(scanPaths []string) ([]productInfo, error) {
 			}
 			d := filepath.Dir(path)
 			if info.Name() == catalog.ProductFileName {
-				p, err := catalog.ReadProductFile(d)
+				p, err := catalog.ReadProductFile(d, commit, repo)
 				if err != nil {
 					return err
 				}
@@ -63,7 +65,7 @@ func scanProducts(scanPaths []string) ([]productInfo, error) {
 				}
 				products = append(products, product)
 			} else if info.Name() == kpt.KptFileName {
-				p, err := kpt.KptFileToProduct(d)
+				p, err := kpt.KptFileToProduct(d, commit, repo)
 				//	fmt.Printf("Error reading KPTFile %v", err)
 				if err != nil {
 					return err

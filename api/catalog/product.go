@@ -78,7 +78,7 @@ type GitSource struct {
 	Ref string `yaml:"ref,omitempty"`
 }
 
-func ReadProductFile(dir string) (Product, error) {
+func ReadProductFile(dir string, commit string, repo string) (Product, error) {
 	p := Product{ResourceMeta: ProductTypeMeta}
 
 	f, err := os.Open(filepath.Join(dir, ProductFileName))
@@ -92,5 +92,8 @@ func ReadProductFile(dir string) (Product, error) {
 	if err = d.Decode(&p); err != nil {
 		return Product{}, fmt.Errorf("unable to parse %s, %w", ProductFileName, err)
 	}
+	p.Assests[0].Git.Directory = dir
+	p.Assests[0].Git.Commit = commit
+	p.Assests[0].Git.Repo = repo
 	return p, nil
 }
