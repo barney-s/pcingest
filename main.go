@@ -46,7 +46,7 @@ func scanProducts(scanPaths []string) ([]productInfo, error) {
 	var product productInfo
 
 	commit := os.Getenv("COMMIT_SHA")
-	repo := os.Getenv("_HEAD_REPO_URL")
+	repo := os.Getenv("REPO_NAME")
 	for _, path := range scanPaths {
 		err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
