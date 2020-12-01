@@ -45,7 +45,9 @@ func TestReadProductFile(t *testing.T) {
 				Commit:    "dd8adeb5483fc1s455fssfrh5211kjkjgvck9377",
 				Directory: "test/product",
 				Repo:      "https://github.com/anthos/catalog/base",
-			}},
+			},
+			Version: "v1.0",
+		},
 		},
 	}, f)
 }

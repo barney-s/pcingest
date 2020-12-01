@@ -9,3 +9,4 @@ display:
   icon_uri: http://cloud.google.com/icons/anthos.svg
 assests:
   - name: base module
+    version: v1.0

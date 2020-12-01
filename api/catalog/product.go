@@ -60,8 +60,9 @@ type ConnectorConfig struct {
 }
 
 type AssetReference struct {
-	Name string    `yaml:"name"`
-	Git  GitSource `yaml:"git"`
+	Name    string    `yaml:"name"`
+	Git     GitSource `yaml:"git"`
+	Version string    `yaml:"version"`
 }
 
 type GitSource struct {
